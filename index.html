@@ -1,31 +1,52 @@
 ```html
-<!-- Load Font -->
+<!-- =========================
+WORDPRESS-SAFE CHART.JS TEMPLATE
+Prevents:
+- giant whitespace gaps
+- canvas resize bugs
+- Gutenberg layout issues
+- Elementor spacing issues
+- responsive rendering glitches
+- offscreen render problems
+========================= -->
+
+<!-- Font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500&display=swap" rel="stylesheet">
 
-<div id="india-credit-graph-wrapper">
+<link
+  href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&display=swap"
+  rel="stylesheet"
+>
 
-  <div class="graph-box">
+<!-- Wrapper -->
+<div class="gd-chart-wrapper">
 
-    <h2 class="graph-title">
+  <div class="gd-chart-box">
+
+    <h2 class="gd-chart-title">
       Africa receives the largest regional share of India’s development credit
     </h2>
 
-    <p class="graph-subtitle">
+    <p class="gd-chart-subtitle">
       Government of India Lines of Credit, by region/country, USD billions
     </p>
 
-    <div class="chart-wrap">
-      <canvas id="indiaCreditGraph"></canvas>
+    <!-- IMPORTANT -->
+    <div class="gd-chart-container">
+      <canvas id="gdIndiaCreditChart"></canvas>
     </div>
 
-    <div class="gd-badge">Gd</div>
+    <div class="gd-badge">
+      Gd
+    </div>
 
-    <div class="graph-note">
-      <strong>Note:</strong> Africa refers to Lines of Credit extended to 42 African countries.
+    <div class="gd-chart-note">
+      <strong>Note:</strong>
+      Africa refers to Lines of Credit extended to 42 African countries.
       Country-level figures are shown separately for selected recipients.
-      CIS = Commonwealth of Independent States.<br><br>
+      CIS = Commonwealth of Independent States.
+      <br><br>
       Source: Ministry of External Affairs, Government of India.
     </div>
 
@@ -33,14 +54,24 @@
 
 </div>
 
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  const ctx = document.getElementById("indiaCreditGraph");
+  // Prevent duplicate initialization
+  if (window.gdIndiaCreditChartInitialized) return;
+  window.gdIndiaCreditChartInitialized = true;
 
-  new Chart(ctx, {
+  const canvas = document.getElementById("gdIndiaCreditChart");
+
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  // Create chart
+  const chart = new Chart(ctx, {
 
     type: "bar",
 
@@ -60,25 +91,75 @@ document.addEventListener("DOMContentLoaded", function () {
 
       datasets: [{
         data: [12, 7.862, 2, 1.84, 1.65, 1.43, 0.811, 0.745, 0.155],
+
         backgroundColor: "#323da5",
+        hoverBackgroundColor: "#323da5",
+
         borderRadius: 8,
-        barThickness: 28
+        borderSkipped: false,
+
+        barThickness: 28,
+        maxBarThickness: 28
       }]
 
     },
 
     options: {
 
-      responsive: true,
-
-      /* CRITICAL */
-      maintainAspectRatio: false,
-
       indexAxis: "y",
 
+      responsive: true,
+
+      // CRITICAL
+      maintainAspectRatio: false,
+
+      resizeDelay: 200,
+
+      animation: {
+        duration: 1200,
+        easing: "easeOutQuart"
+      },
+
       plugins: {
+
         legend: {
           display: false
+        },
+
+        tooltip: {
+
+          backgroundColor: "#ffffff",
+          titleColor: "#000000",
+          bodyColor: "#000000",
+
+          borderColor: "rgba(0,0,0,0.08)",
+          borderWidth: 1,
+
+          displayColors: false,
+
+          callbacks: {
+            label: function(context) {
+              return "USD " + context.raw + " bn";
+            }
+          },
+
+          bodyFont: {
+            family: "Plus Jakarta Sans",
+            weight: "500"
+          },
+
+          titleFont: {
+            family: "Plus Jakarta Sans",
+            weight: "700"
+          }
+
+        }
+
+      },
+
+      layout: {
+        padding: {
+          right: 20
         }
       },
 
@@ -89,12 +170,15 @@ document.addEventListener("DOMContentLoaded", function () {
           beginAtZero: true,
 
           ticks: {
-            color: "#000",
+
+            color: "#000000",
+
             font: {
               family: "Plus Jakarta Sans",
               size: 12,
               weight: "500"
             }
+
           },
 
           grid: {
@@ -110,12 +194,15 @@ document.addEventListener("DOMContentLoaded", function () {
         y: {
 
           ticks: {
-            color: "#000",
+
+            color: "#000000",
+
             font: {
               family: "Plus Jakarta Sans",
               size: 13,
               weight: "500"
             }
+
           },
 
           grid: {
@@ -134,105 +221,245 @@ document.addEventListener("DOMContentLoaded", function () {
 
   });
 
+  // IMPORTANT
+  // Fixes hidden/offscreen render bugs
+  setTimeout(() => {
+    chart.resize();
+    chart.update();
+  }, 300);
+
+  // Resize again after fonts fully load
+  window.addEventListener("load", () => {
+    chart.resize();
+    chart.update();
+  });
+
 });
 </script>
 
 <style>
-#india-credit-graph-wrapper {
+/* =========================
+RESET
+========================= */
+
+.gd-chart-wrapper *,
+.gd-chart-wrapper *::before,
+.gd-chart-wrapper *::after {
+  box-sizing: border-box;
+}
+
+/* =========================
+WRAPPER
+========================= */
+
+.gd-chart-wrapper {
   width: 100%;
   margin: 40px 0;
+  clear: both;
 }
 
-.graph-box {
-  background: #F8F4EE;
-  padding: 40px 36px 30px;
-  border-radius: 20px;
+/* =========================
+CARD
+========================= */
+
+.gd-chart-box {
+
+  width: 100%;
   max-width: 700px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  font-family: 'Plus Jakarta Sans', sans-serif;
 
-  /* IMPORTANT */
+  margin: 0 auto;
+
+  background: #F8F4EE;
+
+  border-radius: 20px;
+
+  padding: 40px 36px 30px;
+
   overflow: hidden;
+
+  position: relative;
+
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-.graph-title {
+/* Prevent WordPress float issues */
+.gd-chart-box::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* =========================
+TITLE
+========================= */
+
+.gd-chart-title {
   margin: 0 0 12px;
+
+  color: #000000;
+
   font-size: 32px;
   line-height: 1.2;
-  font-weight: 500;
-  color: #000;
+  font-weight: 700;
 }
 
-.graph-subtitle {
+/* =========================
+SUBTITLE
+========================= */
+
+.gd-chart-subtitle {
   margin: 0 0 28px;
+
+  color: #000000;
+
   font-size: 16px;
   line-height: 1.5;
   font-weight: 500;
-  color: #000;
 }
 
-/* THIS FIXES THE GAP */
-.chart-wrap {
+/* =========================
+CHART CONTAINER
+CRITICAL SECTION
+========================= */
+
+.gd-chart-container {
+
   position: relative;
+
   width: 100%;
+
   height: 520px;
 
-  /* IMPORTANT */
+  min-height: 520px;
+
+  max-height: 520px;
+
   overflow: hidden;
+
+  display: block;
 }
 
-/* IMPORTANT */
-canvas {
+/* =========================
+CANVAS
+CRITICAL SECTION
+========================= */
+
+#gdIndiaCreditChart {
+
   display: block !important;
+
   width: 100% !important;
-  height: 100% !important;
+
+  height: 520px !important;
+
+  min-height: 520px !important;
+
   max-height: 520px !important;
 }
 
+/* =========================
+BADGE
+========================= */
+
 .gd-badge {
+
   width: 68px;
   height: 68px;
+
   margin: 28px auto 22px;
+
   border-radius: 50%;
-  background: #fff;
+
+  background: #ffffff;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   font-size: 24px;
   font-weight: 800;
-  color: #000;
+
+  color: #000000;
+
   box-shadow: 0 4px 14px rgba(0,0,0,0.06);
 }
 
-.graph-note {
+/* =========================
+NOTE
+========================= */
+
+.gd-chart-note {
+
+  color: #000000;
+
   font-size: 13px;
   line-height: 1.7;
-  color: #000;
+
   font-weight: 500;
 }
 
-/* Mobile */
+/* =========================
+WORDPRESS FIXES
+========================= */
+
+/* Prevent Gutenberg image spacing */
+.gd-chart-wrapper p:empty,
+.gd-chart-wrapper figure:empty {
+  display: none;
+}
+
+/* Prevent Elementor min-height weirdness */
+.elementor-widget-container .gd-chart-wrapper,
+.wp-block-group .gd-chart-wrapper {
+  min-height: auto !important;
+}
+
+/* Prevent theme canvas styling conflicts */
+canvas {
+  max-width: 100%;
+}
+
+/* =========================
+MOBILE
+========================= */
+
 @media (max-width: 768px) {
 
-  .graph-box {
+  .gd-chart-box {
     padding: 28px 18px 24px;
   }
 
-  .graph-title {
+  .gd-chart-title {
     font-size: 24px;
   }
 
-  .graph-subtitle {
+  .gd-chart-subtitle {
     font-size: 14px;
+    margin-bottom: 22px;
   }
 
-  .chart-wrap {
+  .gd-chart-container {
+
     height: 560px;
+    min-height: 560px;
+    max-height: 560px;
   }
 
-  canvas {
+  #gdIndiaCreditChart {
+
+    height: 560px !important;
+    min-height: 560px !important;
     max-height: 560px !important;
+  }
+
+  .gd-badge {
+    width: 58px;
+    height: 58px;
+    font-size: 22px;
+  }
+
+  .gd-chart-note {
+    font-size: 12px;
   }
 
 }
