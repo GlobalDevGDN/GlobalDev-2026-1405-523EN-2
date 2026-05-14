@@ -1,9 +1,11 @@
-<!-- Load Plus Jakarta Sans -->
+```html
+<!-- Load Font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500&display=swap" rel="stylesheet">
 
 <div id="india-credit-graph-wrapper">
+
   <div class="graph-box">
 
     <h2 class="graph-title">
@@ -14,8 +16,7 @@
       Government of India Lines of Credit, by region/country, USD billions
     </p>
 
-    <!-- Proper chart container -->
-    <div class="graph-chart-container">
+    <div class="chart-wrap">
       <canvas id="indiaCreditGraph"></canvas>
     </div>
 
@@ -29,95 +30,55 @@
     </div>
 
   </div>
+
 </div>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  const ctx = document.getElementById('indiaCreditGraph').getContext('2d');
+  const ctx = document.getElementById("indiaCreditGraph");
 
-  const chart = new Chart(ctx, {
+  new Chart(ctx, {
 
-    type: 'bar',
+    type: "bar",
 
     data: {
 
       labels: [
-        'Africa',
-        'Bangladesh',
-        'Sri Lanka',
-        'CIS',
-        'Nepal',
-        'Maldives',
-        'Latin America',
-        'Myanmar',
-        'Oceania'
+        "Africa",
+        "Bangladesh",
+        "Sri Lanka",
+        "CIS",
+        "Nepal",
+        "Maldives",
+        "Latin America",
+        "Myanmar",
+        "Oceania"
       ],
 
       datasets: [{
         data: [12, 7.862, 2, 1.84, 1.65, 1.43, 0.811, 0.745, 0.155],
-        backgroundColor: '#323da5',
+        backgroundColor: "#323da5",
         borderRadius: 8,
-        barThickness: 28,
-        hoverBackgroundColor: '#323da5'
+        barThickness: 28
       }]
 
     },
 
     options: {
 
-      indexAxis: 'y',
-
       responsive: true,
 
-      /* IMPORTANT */
+      /* CRITICAL */
       maintainAspectRatio: false,
 
-      animation: {
-        duration: 1400,
-        easing: 'easeOutQuart'
-      },
+      indexAxis: "y",
 
       plugins: {
-
         legend: {
           display: false
-        },
-
-        tooltip: {
-
-          backgroundColor: '#ffffff',
-          titleColor: '#000000',
-          bodyColor: '#000000',
-          borderColor: 'rgba(0,0,0,0.08)',
-          borderWidth: 1,
-
-          callbacks: {
-            label: function(context) {
-              return 'USD ' + context.raw + ' bn';
-            }
-          },
-
-          bodyFont: {
-            family: 'Plus Jakarta Sans',
-            weight: '500'
-          },
-
-          titleFont: {
-            family: 'Plus Jakarta Sans',
-            weight: '500'
-          }
-
-        }
-
-      },
-
-      layout: {
-        padding: {
-          right: 20
         }
       },
 
@@ -128,17 +89,16 @@ document.addEventListener("DOMContentLoaded", function () {
           beginAtZero: true,
 
           ticks: {
-            color: '#000000',
-
+            color: "#000",
             font: {
-              family: 'Plus Jakarta Sans',
+              family: "Plus Jakarta Sans",
               size: 12,
-              weight: '500'
+              weight: "500"
             }
           },
 
           grid: {
-            color: 'rgba(0,0,0,0.08)'
+            color: "rgba(0,0,0,0.08)"
           },
 
           border: {
@@ -150,12 +110,11 @@ document.addEventListener("DOMContentLoaded", function () {
         y: {
 
           ticks: {
-            color: '#000000',
-
+            color: "#000",
             font: {
-              family: 'Plus Jakarta Sans',
+              family: "Plus Jakarta Sans",
               size: 13,
-              weight: '500'
+              weight: "500"
             }
           },
 
@@ -175,19 +134,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   });
 
-  /* Fix layout calculation issues */
-  setTimeout(() => {
-    chart.resize();
-  }, 300);
-
 });
 </script>
 
 <style>
 #india-credit-graph-wrapper {
   width: 100%;
-  display: flex;
-  justify-content: center;
   margin: 40px 0;
 }
 
@@ -195,68 +147,68 @@ document.addEventListener("DOMContentLoaded", function () {
   background: #F8F4EE;
   padding: 40px 36px 30px;
   border-radius: 20px;
-  width: 100%;
   max-width: 700px;
+  margin: 0 auto;
   box-sizing: border-box;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  position: relative;
-}
 
-/* Prevent layout collapse issues */
-.graph-box::after {
-  content: "";
-  display: block;
-  clear: both;
+  /* IMPORTANT */
+  overflow: hidden;
 }
 
 .graph-title {
   margin: 0 0 12px;
-  color: #000000;
   font-size: 32px;
   line-height: 1.2;
   font-weight: 500;
+  color: #000;
 }
 
 .graph-subtitle {
-  margin: 0 0 32px;
-  color: #000000;
+  margin: 0 0 28px;
   font-size: 16px;
   line-height: 1.5;
   font-weight: 500;
+  color: #000;
 }
 
-/* IMPORTANT FIX */
-.graph-chart-container {
+/* THIS FIXES THE GAP */
+.chart-wrap {
   position: relative;
   width: 100%;
   height: 520px;
+
+  /* IMPORTANT */
+  overflow: hidden;
 }
 
-/* Remove forced canvas height */
-#indiaCreditGraph {
+/* IMPORTANT */
+canvas {
+  display: block !important;
   width: 100% !important;
-  display: block;
+  height: 100% !important;
+  max-height: 520px !important;
 }
 
 .gd-badge {
   width: 68px;
   height: 68px;
-  background: #ffffff;
+  margin: 28px auto 22px;
   border-radius: 50%;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 28px auto 22px;
   font-size: 24px;
   font-weight: 800;
-  color: #000000;
+  color: #000;
   box-shadow: 0 4px 14px rgba(0,0,0,0.06);
 }
 
 .graph-note {
-  color: #000000;
   font-size: 13px;
   line-height: 1.7;
+  color: #000;
   font-weight: 500;
 }
 
@@ -273,22 +225,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   .graph-subtitle {
     font-size: 14px;
-    margin-bottom: 24px;
   }
 
-  .graph-chart-container {
+  .chart-wrap {
     height: 560px;
   }
 
-  .gd-badge {
-    width: 58px;
-    height: 58px;
-    font-size: 22px;
-  }
-
-  .graph-note {
-    font-size: 12px;
+  canvas {
+    max-height: 560px !important;
   }
 
 }
 </style>
+```
