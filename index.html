@@ -14,7 +14,10 @@
       Government of India Lines of Credit, by region/country, USD billions
     </p>
 
-    <canvas id="indiaCreditGraph"></canvas>
+    <!-- Proper chart container -->
+    <div class="graph-chart-container">
+      <canvas id="indiaCreditGraph"></canvas>
+    </div>
 
     <div class="gd-badge">Gd</div>
 
@@ -34,166 +37,148 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  const graphWrapper = document.querySelector("#india-credit-graph-wrapper");
-  let chartLoaded = false;
+  const ctx = document.getElementById('indiaCreditGraph').getContext('2d');
 
-  // Lazy load chart when near viewport
-  const observer = new IntersectionObserver((entries) => {
+  const chart = new Chart(ctx, {
 
-    entries.forEach(entry => {
+    type: 'bar',
 
-      if (entry.isIntersecting && !chartLoaded) {
+    data: {
 
-        loadChart();
-        chartLoaded = true;
-        observer.disconnect();
+      labels: [
+        'Africa',
+        'Bangladesh',
+        'Sri Lanka',
+        'CIS',
+        'Nepal',
+        'Maldives',
+        'Latin America',
+        'Myanmar',
+        'Oceania'
+      ],
 
-      }
+      datasets: [{
+        data: [12, 7.862, 2, 1.84, 1.65, 1.43, 0.811, 0.745, 0.155],
+        backgroundColor: '#323da5',
+        borderRadius: 8,
+        barThickness: 28,
+        hoverBackgroundColor: '#323da5'
+      }]
 
-    });
+    },
 
-  }, {
-    threshold: 0.2
-  });
+    options: {
 
-  observer.observe(graphWrapper);
+      indexAxis: 'y',
 
-  function loadChart() {
+      responsive: true,
 
-    const ctx = document.getElementById('indiaCreditGraph').getContext('2d');
+      /* IMPORTANT */
+      maintainAspectRatio: false,
 
-    new Chart(ctx, {
-      type: 'bar',
-
-      data: {
-        labels: [
-          'Africa',
-          'Bangladesh',
-          'Sri Lanka',
-          'CIS',
-          'Nepal',
-          'Maldives',
-          'Latin America',
-          'Myanmar',
-          'Oceania'
-        ],
-
-        datasets: [{
-          data: [12, 7.862, 2, 1.84, 1.65, 1.43, 0.811, 0.745, 0.155],
-          backgroundColor: '#323da5',
-          borderRadius: 8,
-          barThickness: 28,
-          hoverBackgroundColor: '#323da5'
-        }]
+      animation: {
+        duration: 1400,
+        easing: 'easeOutQuart'
       },
 
-      options: {
+      plugins: {
 
-        indexAxis: 'y',
-
-        responsive: true,
-        maintainAspectRatio: false,
-
-        animation: {
-          duration: 1400,
-          easing: 'easeOutQuart'
+        legend: {
+          display: false
         },
 
-        plugins: {
+        tooltip: {
 
-          legend: {
+          backgroundColor: '#ffffff',
+          titleColor: '#000000',
+          bodyColor: '#000000',
+          borderColor: 'rgba(0,0,0,0.08)',
+          borderWidth: 1,
+
+          callbacks: {
+            label: function(context) {
+              return 'USD ' + context.raw + ' bn';
+            }
+          },
+
+          bodyFont: {
+            family: 'Plus Jakarta Sans',
+            weight: '500'
+          },
+
+          titleFont: {
+            family: 'Plus Jakarta Sans',
+            weight: '500'
+          }
+
+        }
+
+      },
+
+      layout: {
+        padding: {
+          right: 20
+        }
+      },
+
+      scales: {
+
+        x: {
+
+          beginAtZero: true,
+
+          ticks: {
+            color: '#000000',
+
+            font: {
+              family: 'Plus Jakarta Sans',
+              size: 12,
+              weight: '500'
+            }
+          },
+
+          grid: {
+            color: 'rgba(0,0,0,0.08)'
+          },
+
+          border: {
+            display: false
+          }
+
+        },
+
+        y: {
+
+          ticks: {
+            color: '#000000',
+
+            font: {
+              family: 'Plus Jakarta Sans',
+              size: 13,
+              weight: '500'
+            }
+          },
+
+          grid: {
             display: false
           },
 
-          tooltip: {
-
-            backgroundColor: '#ffffff',
-            titleColor: '#000000',
-            bodyColor: '#000000',
-            borderColor: 'rgba(0,0,0,0.08)',
-            borderWidth: 1,
-
-            callbacks: {
-              label: function(context) {
-                return 'USD ' + context.raw + ' bn';
-              }
-            },
-
-            bodyFont: {
-              family: 'Plus Jakarta Sans',
-              weight: '500'
-            },
-
-            titleFont: {
-              family: 'Plus Jakarta Sans',
-              weight: '500'
-            }
-
-          }
-
-        },
-
-        layout: {
-          padding: {
-            right: 20
-          }
-        },
-
-        scales: {
-
-          x: {
-
-            beginAtZero: true,
-
-            ticks: {
-              color: '#000000',
-
-              font: {
-                family: 'Plus Jakarta Sans',
-                size: 12,
-                weight: '500'
-              }
-            },
-
-            grid: {
-              color: 'rgba(0,0,0,0.08)'
-            },
-
-            border: {
-              display: false
-            }
-
-          },
-
-          y: {
-
-            ticks: {
-              color: '#000000',
-
-              font: {
-                family: 'Plus Jakarta Sans',
-                size: 13,
-                weight: '500'
-              }
-            },
-
-            grid: {
-              display: false
-            },
-
-            border: {
-              display: false
-            }
-
+          border: {
+            display: false
           }
 
         }
 
       }
 
-    });
+    }
 
-  }
+  });
+
+  /* Fix layout calculation issues */
+  setTimeout(() => {
+    chart.resize();
+  }, 300);
 
 });
 </script>
@@ -217,6 +202,13 @@ document.addEventListener("DOMContentLoaded", function () {
   position: relative;
 }
 
+/* Prevent layout collapse issues */
+.graph-box::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
 .graph-title {
   margin: 0 0 12px;
   color: #000000;
@@ -233,9 +225,16 @@ document.addEventListener("DOMContentLoaded", function () {
   font-weight: 500;
 }
 
+/* IMPORTANT FIX */
+.graph-chart-container {
+  position: relative;
+  width: 100%;
+  height: 520px;
+}
+
+/* Remove forced canvas height */
 #indiaCreditGraph {
   width: 100% !important;
-  height: 520px !important;
   display: block;
 }
 
@@ -250,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
   margin: 28px auto 22px;
   font-size: 24px;
   font-weight: 800;
-  color: '#000000';
+  color: #000000;
   box-shadow: 0 4px 14px rgba(0,0,0,0.06);
 }
 
@@ -277,8 +276,8 @@ document.addEventListener("DOMContentLoaded", function () {
     margin-bottom: 24px;
   }
 
-  #indiaCreditGraph {
-    height: 560px !important;
+  .graph-chart-container {
+    height: 560px;
   }
 
   .gd-badge {
