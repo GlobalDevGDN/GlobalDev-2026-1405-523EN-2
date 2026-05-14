@@ -1,0 +1,294 @@
+<!-- Load Plus Jakarta Sans -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500&display=swap" rel="stylesheet">
+
+<div id="india-credit-graph-wrapper">
+  <div class="graph-box">
+
+    <h2 class="graph-title">
+      Africa receives the largest regional share of India’s development credit
+    </h2>
+
+    <p class="graph-subtitle">
+      Government of India Lines of Credit, by region/country, USD billions
+    </p>
+
+    <canvas id="indiaCreditGraph"></canvas>
+
+    <div class="gd-badge">Gd</div>
+
+    <div class="graph-note">
+      <strong>Note:</strong> Africa refers to Lines of Credit extended to 42 African countries.
+      Country-level figures are shown separately for selected recipients.
+      CIS = Commonwealth of Independent States.<br><br>
+      Source: Ministry of External Affairs, Government of India.
+    </div>
+
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const graphWrapper = document.querySelector("#india-credit-graph-wrapper");
+  let chartLoaded = false;
+
+  // Lazy load chart when near viewport
+  const observer = new IntersectionObserver((entries) => {
+
+    entries.forEach(entry => {
+
+      if (entry.isIntersecting && !chartLoaded) {
+
+        loadChart();
+        chartLoaded = true;
+        observer.disconnect();
+
+      }
+
+    });
+
+  }, {
+    threshold: 0.2
+  });
+
+  observer.observe(graphWrapper);
+
+  function loadChart() {
+
+    const ctx = document.getElementById('indiaCreditGraph').getContext('2d');
+
+    new Chart(ctx, {
+      type: 'bar',
+
+      data: {
+        labels: [
+          'Africa',
+          'Bangladesh',
+          'Sri Lanka',
+          'CIS',
+          'Nepal',
+          'Maldives',
+          'Latin America',
+          'Myanmar',
+          'Oceania'
+        ],
+
+        datasets: [{
+          data: [12, 7.862, 2, 1.84, 1.65, 1.43, 0.811, 0.745, 0.155],
+          backgroundColor: '#323da5',
+          borderRadius: 8,
+          barThickness: 28,
+          hoverBackgroundColor: '#323da5'
+        }]
+      },
+
+      options: {
+
+        indexAxis: 'y',
+
+        responsive: true,
+        maintainAspectRatio: false,
+
+        animation: {
+          duration: 1400,
+          easing: 'easeOutQuart'
+        },
+
+        plugins: {
+
+          legend: {
+            display: false
+          },
+
+          tooltip: {
+
+            backgroundColor: '#ffffff',
+            titleColor: '#000000',
+            bodyColor: '#000000',
+            borderColor: 'rgba(0,0,0,0.08)',
+            borderWidth: 1,
+
+            callbacks: {
+              label: function(context) {
+                return 'USD ' + context.raw + ' bn';
+              }
+            },
+
+            bodyFont: {
+              family: 'Plus Jakarta Sans',
+              weight: '500'
+            },
+
+            titleFont: {
+              family: 'Plus Jakarta Sans',
+              weight: '500'
+            }
+
+          }
+
+        },
+
+        layout: {
+          padding: {
+            right: 20
+          }
+        },
+
+        scales: {
+
+          x: {
+
+            beginAtZero: true,
+
+            ticks: {
+              color: '#000000',
+
+              font: {
+                family: 'Plus Jakarta Sans',
+                size: 12,
+                weight: '500'
+              }
+            },
+
+            grid: {
+              color: 'rgba(0,0,0,0.08)'
+            },
+
+            border: {
+              display: false
+            }
+
+          },
+
+          y: {
+
+            ticks: {
+              color: '#000000',
+
+              font: {
+                family: 'Plus Jakarta Sans',
+                size: 13,
+                weight: '500'
+              }
+            },
+
+            grid: {
+              display: false
+            },
+
+            border: {
+              display: false
+            }
+
+          }
+
+        }
+
+      }
+
+    });
+
+  }
+
+});
+</script>
+
+<style>
+#india-credit-graph-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.graph-box {
+  background: #F8F4EE;
+  padding: 40px 36px 30px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 1000px;
+  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  position: relative;
+}
+
+.graph-title {
+  margin: 0 0 12px;
+  color: #000000;
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.graph-subtitle {
+  margin: 0 0 32px;
+  color: #000000;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+#indiaCreditGraph {
+  width: 100% !important;
+  height: 620px !important;
+}
+
+.gd-badge {
+  width: 68px;
+  height: 68px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 28px auto 22px;
+  font-size: 24px;
+  font-weight: 800;
+  color: '#000000';
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.graph-note {
+  color: #000000;
+  font-size: 13px;
+  line-height: 1.7;
+  font-weight: 500;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+  .graph-box {
+    padding: 28px 18px 24px;
+  }
+
+  .graph-title {
+    font-size: 24px;
+  }
+
+  .graph-subtitle {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  #indiaCreditGraph {
+    height: 560px !important;
+  }
+
+  .gd-badge {
+    width: 58px;
+    height: 58px;
+    font-size: 22px;
+  }
+
+  .graph-note {
+    font-size: 12px;
+  }
+
+}
+</style>
